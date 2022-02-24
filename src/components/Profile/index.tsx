@@ -1,6 +1,10 @@
+import { useChallenges } from "@/hooks";
+
 import styles from "./styles.module.scss";
 
 export function Profile() {
+  const { level } = useChallenges();
+
   return (
     <div className={styles.profileContainer}>
       <img
@@ -14,7 +18,7 @@ export function Profile() {
             src="/icons/level.svg"
             alt="Ícone de uma seta verde para cima simbolizando o level"
           />
-          Level 1
+          Level {level}
         </p>
       </div>
     </div>

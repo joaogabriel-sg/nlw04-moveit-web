@@ -1,31 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCountdown } from "@/hooks";
 
 import styles from "./styles.module.scss";
 
 export function Countdown() {
-  const [time, setTime] = useState(25 * 60); // 25 minutes
-  const [active, setActive] = useState(false);
-
-  const minutes = Math.floor(time / 60);
-  const seconds = time % 60;
+  const {
+    minutes,
+    seconds,
+    isActive,
+    hasFinished,
+    startCountdown,
+    resetCountdown,
+  } = useCountdown();
 
   const [minuteLeft, minuteRight] = String(minutes).padStart(2, "0").split("");
   const [secondLeft, secondRight] = String(seconds).padStart(2, "0").split("");
-
-  const startCountdown = useCallback(() => {
-    setActive(true);
-  }, []);
-
-  useEffect(() => {
-    if (active && time > 0) {
-      const timeoutId = setTimeout(
-        () => setTime((prevTime) => prevTime - 1),
-        1000
-      );
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, [active, time]);
 
   return (
     <div>
@@ -41,13 +29,31 @@ export function Countdown() {
         </div>
       </div>
 
-      <button
-        type="button"
-        className={styles.countdownButton}
-        onClick={startCountdown}
-      >
-        Iniciar um ciclo
-      </button>
+      {hasFinished && (
+        <button disabled className={styles.countdownButton}>
+          Ciclo encerrado
+        </button>
+      )}
+
+      {!hasFinished && isActive && (
+        <button
+          type="button"
+          className={`${styles.countdownButton} ${styles.countdownButtonActive}`}
+          onClick={resetCountdown}
+        >
+          Abandonar ciclo
+        </button>
+      )}
+
+      {!hasFinished && !isActive && (
+        <button
+          type="button"
+          className={styles.countdownButton}
+          onClick={startCountdown}
+        >
+          Iniciar um ciclo
+        </button>
+      )}
     </div>
   );
 }
